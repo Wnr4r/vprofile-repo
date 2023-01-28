@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TOMURL="https://archive.apache.org/dist/tomcat/tomcat-8/v8.5.37/bin/apache-tomcat-8.5.37.tar.gz"
+TOMURL="https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.71/bin/apache-tomcat-9.0.71.tar.gz"
 yum install java-1.8.0-openjdk -y
 yum install git maven wget -y
 cd /tmp/
@@ -8,8 +8,8 @@ wget $TOMURL -O tomcatbin.tar.gz
 EXTOUT=`tar xzvf tomcatbin.tar.gz`
 TOMDIR=`echo $EXTOUT | cut -d '/' -f1`
 useradd --shell /sbin/nologin tomcat
-rsync -avzh /tmp/$TOMDIR/ /usr/local/tomcat8/
-chown -R tomcat.tomcat /usr/local/tomcat8
+rsync -avzh /tmp/$TOMDIR/ /usr/local/tomcat9/
+chown -R tomcat.tomcat /usr/local/tomcat9
 
 rm -rf /etc/systemd/system/tomcat.service
 
@@ -20,13 +20,13 @@ After=network.target
 
 [Service]
 User=tomcat
-WorkingDirectory=/usr/local/tomcat8
+WorkingDirectory=/usr/local/tomcat9
 Environment=JRE_HOME=/usr/lib/jvm/jre
 Environment=JAVA_HOME=/usr/lib/jvm/jre
-Environment=CATALINA_HOME=/usr/local/tomcat8
-Environment=CATALINE_BASE=/usr/local/tomcat8
-ExecStart=/usr/local/tomcat8/bin/catalina.sh run
-ExecStop=/usr/local/tomcat8/bin/shutdown.sh
+Environment=CATALINA_HOME=/usr/local/tomcat9
+Environment=CATALINE_BASE=/usr/local/tomcat9
+ExecStart=/usr/local/tomcat9/bin/catalina.sh run
+ExecStop=/usr/local/tomcat9/bin/shutdown.sh
 SyslogIdentifier=tomcat-%i
 
 [Install]
@@ -40,7 +40,7 @@ systemctl enable tomcat
 cd /tmp/
 wget https://raw.githubusercontent.com/devopshydclub/vprofile-repo/master/tomcat-users.xml
 wget https://raw.githubusercontent.com/devopshydclub/vprofile-repo/master/context.xml
-cp tomcat-users.xml /usr/local/tomcat8/conf/tomcat-users.xml
-cp context.xml /usr/local/tomcat8/webapps/manager/META-INF/
+cp tomcat-users.xml /usr/local/tomcat9/conf/tomcat-users.xml
+cp context.xml /usr/local/tomcat9/webapps/manager/META-INF/
 systemctl restart tomcat
 echo "Done"
